@@ -63,6 +63,7 @@ function render(message) {
   const { board, line } = readMoves(moves);
   winner = line;
   const ready = !!room?.ready;
+  window.gomokuMusic?.setActive(ready);
   const turn = currentColor();
   byId('loss-overlay').hidden = !(ready && line.length > 0 && room.color === turn);
   const active = ready && !pending && !gameOver() && room.color === turn;

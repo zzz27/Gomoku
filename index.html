@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f7f4eb">
 <title>五子棋 · 好友对弈</title>
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 <script defer src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
-<script defer src="game.js?v=4"></script>
+<script defer src="music.js?v=5"></script>
+<script defer src="game.js?v=5"></script>
 </head>
 <body>
 <main>
-  <header><span class="mark" aria-hidden="true">●<i>●</i></span><span>好友对弈</span></header>
+  <header><span class="mark" aria-hidden="true">●<i>●</i></span><span>好友对弈</span><button id="music-toggle" type="button" role="switch" aria-checked="true">♫ 音乐开</button></header>
   <div class="layout">
     <section class="controls">
       <h1>五子棋</h1>
@@ -32,6 +33,12 @@
           <div class="row actions"><button id="again" hidden>再来一局</button><button id="leave">离开房间</button></div>
         </div>
       </div>
+      <section class="music-panel" aria-label="背景音乐">
+        <p id="music-status" role="status">赌神 BGM · 开局自动播放</p>
+        <button id="music-play" type="button" hidden>点击播放音乐</button>
+        <div id="music-player"></div>
+        <a href="https://www.youtube.com/watch?v=IfYPHQ-oU5w" target="_blank" rel="noopener">在 YouTube 打开</a>
+      </section>
     </section>
     <section class="play" aria-label="对局">
       <div class="game-status"><span id="turn-stone" class="stone black" aria-hidden="true"></span><span id="status" role="status">创建或加入房间开始对弈</span></div>
