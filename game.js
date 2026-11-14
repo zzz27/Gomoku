@@ -144,11 +144,12 @@ function attach(session, link) {
   });
   link.on('data', packet => {
     if (!current() || !packet || typeof packet !== 'object') return;
-    if (!session.host && packet.kind === 'state' && [black, white].includes(packet.hostColor) && readMoves(packet.moves)) {
+    const hostColor = packet.hostColor ?? black;
+    if (!session.host && packet.kind === 'state' && [black, white].includes(hostColor) && readMoves(packet.moves)) {
       clearTimeout(timer);
       session.ready = true;
       moves = packet.moves;
-      session.color = 3 - packet.hostColor;
+      session.color = 3 - hostColor;
       pending = false;
       render();
     }
@@ -181,9 +182,9 @@ function start(color, code) {
     render('联机服务未加载，请刷新页面或换用系统浏览器。');
     return;
   }
-  const id = 'zzz27-gomoku-v2-' + code;
+  const id = 'zzz27-gomoku-v1-' + code;
   const peer = color === black ? new Peer(id) : new Peer();
-  const session = { peer, color, host: color === black, code, link: null, ready: false, listening: false };
+  const session = { peer, color, host: color === black, code, link: null, ready: false, listening: false, alternate: true };
   room = session;
   timer = setTimeout(() => {
     if (room === session && !session.ready) reset('连接超时，请确认房主在线后重试。');
@@ -195,7 +196,7 @@ function start(color, code) {
       session.listening = true;
       render();
     } else {
-      attach(session, peer.connect(id, { reliable: true, serialization: 'json' }));
+      attach(session, peer.connect(id, { reliable: true, serialization: 'json', metadata: { alternatingColors: true } }));
     }
   });
   peer.on('connection', link => {
@@ -203,16 +204,29 @@ function start(color, code) {
       link.on('open', () => link.close());
       return;
     }
+    session.alternate = link.metadata?.alternatingColors === true;
     attach(session, link);
   });
   peer.on('error', error => {
     if (room !== session) return;
+    if (error.type === 'peer-unavailable' && !session.host && !session.triedPreviousVersion) {
+      session.triedPreviousVersion = true;
+      const previous = session.link;
+      session.link = null;
+      previous?.close();
+      attach(session, peer.connect('zzz27-gomoku-v2-' + code, {
+        reliable: true,
+        serialization: 'json',
+        metadata: { alternatingColors: true }
+      }));
+      return;
+    }
     if (error.type === 'unavailable-id' && color === black) {
       reset();
       start(black, makeCode());
       return;
     }
-    reset(error.type === 'peer-unavailable' ? '找不到该房间，请确认房间码和房主在线状态。' : '联机失败，请检查网络后重试。');
+    reset(error.type === 'peer-unavailable' ? '找不到该房间，请双方刷新页面并重新创建房间。' : '联机失败，请检查网络后重试。');
   });
   render();
 }
@@ -254,7 +268,7 @@ byId('leave').onclick = () => reset();
 byId('again').onclick = () => {
   if (room?.ready && room.host && gameOver()) {
     moves = [];
-    room.color = 3 - room.color;
+    if (room.alternate) room.color = 3 - room.color;
     room.link.send({ kind: 'state', moves, hostColor: room.color });
     render();
   }
