@@ -65,6 +65,9 @@ function render(message) {
   const ready = !!room?.ready;
   window.gomokuMusic?.setActive(ready);
   const turn = currentColor();
+  byId('loss-overlay').classList.remove('leaving');
+  byId('loss-overlay').setAttribute('aria-label', '你输了');
+  byId('loss-message').textContent = '菜';
   byId('loss-overlay').hidden = !(ready && line.length > 0 && room.color === turn);
   const active = ready && !pending && !gameOver() && room.color === turn;
   byId('board').dataset.active = active;
@@ -264,7 +267,14 @@ byId('join').onsubmit = event => {
   if (validCode.test(code)) start(white, code);
   else render('请输入 4 位数字房间码。');
 };
-byId('leave').onclick = () => reset();
+byId('leave').onclick = () => {
+  if (!room) return;
+  reset();
+  byId('loss-message').textContent = '想跑？菜！';
+  byId('loss-overlay').classList.add('leaving');
+  byId('loss-overlay').setAttribute('aria-label', '想跑？菜！');
+  byId('loss-overlay').hidden = false;
+};
 byId('again').onclick = () => {
   if (room?.ready && room.host && gameOver()) {
     moves = [];
