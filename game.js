@@ -71,8 +71,8 @@ function render(message) {
   byId('room').hidden = !room;
   byId('lobby').hidden = !!room;
   byId('room-code').textContent = room?.code ?? '';
-  byId('share').hidden = room?.color !== black || !room.listening;
-  byId('again').hidden = !(ready && room.color === black && gameOver());
+  byId('share').hidden = !room?.host || !room.listening;
+  byId('again').hidden = !(ready && room.host && gameOver());
   byId('side').textContent = ready ? '你执' + colorName(room.color) : '15 × 15';
   byId('count').textContent = moves.length + ' 手';
   byId('turn-stone').className = 'stone ' + ((line.length ? 3 - turn : turn) === black ? 'black' : 'white');
@@ -82,7 +82,7 @@ function render(message) {
     if (line.length) status = colorName(3 - turn) + '获胜';
     else if (gameOver()) status = '棋盘已满，平局';
     else status = pending ? '正在同步落子…' : active ? '轮到你 · ' + colorName(turn) : '等待对方 · ' + colorName(turn);
-    if (gameOver() && room.color === white) status += ' · 等待房主开新局';
+    if (gameOver() && !room.host) status += ' · 等待房主开新局';
   }
   byId('status').textContent = message || status;
   points.forEach((point, i) => {
@@ -110,9 +110,9 @@ function reset(message) {
 
 function play(index) {
   if (!room?.ready || pending || gameOver() || currentColor() !== room.color || moves.includes(index)) return;
-  if (room.color === black) {
+  if (room.host) {
     moves.push(index);
-    room.link.send({ kind: 'state', moves });
+    room.link.send({ kind: 'state', moves, hostColor: room.color });
   } else {
     room.link.send({ kind: 'move', index, turn: moves.length });
     pending = true;
@@ -122,7 +122,7 @@ function play(index) {
 
 function attach(session, link) {
   session.link = link;
-  if (session.color === black) {
+  if (session.host) {
     clearTimeout(timer);
     timer = setTimeout(() => {
       if (room === session && session.link === link && !session.ready) {
@@ -135,33 +135,34 @@ function attach(session, link) {
   const current = () => room === session && session.link === link;
   link.on('open', () => {
     if (!current()) return;
-    if (session.color === black) {
+    if (session.host) {
       clearTimeout(timer);
       session.ready = true;
-      link.send({ kind: 'state', moves });
+      link.send({ kind: 'state', moves, hostColor: room.color });
       render();
     }
   });
   link.on('data', packet => {
     if (!current() || !packet || typeof packet !== 'object') return;
-    if (session.color === white && packet.kind === 'state' && readMoves(packet.moves)) {
+    if (!session.host && packet.kind === 'state' && [black, white].includes(packet.hostColor) && readMoves(packet.moves)) {
       clearTimeout(timer);
       session.ready = true;
       moves = packet.moves;
+      session.color = 3 - packet.hostColor;
       pending = false;
       render();
     }
-    if (session.color === black && session.ready && packet.kind === 'move') {
-      if (!gameOver() && currentColor() === white && packet.turn === moves.length && readMoves([...moves, packet.index])) {
+    if (session.host && session.ready && packet.kind === 'move') {
+      if (!gameOver() && currentColor() === 3 - session.color && packet.turn === moves.length && readMoves([...moves, packet.index])) {
         moves.push(packet.index);
       }
-      link.send({ kind: 'state', moves });
+      link.send({ kind: 'state', moves, hostColor: room.color });
       render();
     }
   });
   const disconnected = () => {
     if (!current()) return;
-    if (session.color === black && !session.ready) {
+    if (session.host && !session.ready) {
       session.link = null;
       clearTimeout(timer);
       link.close();
@@ -180,9 +181,9 @@ function start(color, code) {
     render('联机服务未加载，请刷新页面或换用系统浏览器。');
     return;
   }
-  const id = 'zzz27-gomoku-v1-' + code;
+  const id = 'zzz27-gomoku-v2-' + code;
   const peer = color === black ? new Peer(id) : new Peer();
-  const session = { peer, color, code, link: null, ready: false, listening: false };
+  const session = { peer, color, host: color === black, code, link: null, ready: false, listening: false };
   room = session;
   timer = setTimeout(() => {
     if (room === session && !session.ready) reset('连接超时，请确认房主在线后重试。');
@@ -251,9 +252,10 @@ byId('join').onsubmit = event => {
 };
 byId('leave').onclick = () => reset();
 byId('again').onclick = () => {
-  if (room?.ready && room.color === black && gameOver()) {
+  if (room?.ready && room.host && gameOver()) {
     moves = [];
-    room.link.send({ kind: 'state', moves });
+    room.color = 3 - room.color;
+    room.link.send({ kind: 'state', moves, hostColor: room.color });
     render();
   }
 };
