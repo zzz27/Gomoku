@@ -1,0 +1,56 @@
+* { box-sizing: border-box; }
+:root { color-scheme: light; font-family: system-ui,"Microsoft YaHei",sans-serif; color:#24352e; background:#f7f4eb; }
+body { margin:0; }
+main { max-width:1080px; margin:auto; padding:28px clamp(16px,5vw,60px) 40px; }
+header { display:flex; align-items:center; gap:12px; font-size:14px; font-weight:650; letter-spacing:.12em; padding-bottom:22px; border-bottom:1px solid #dcdace; }
+.mark { letter-spacing:-5px; font-size:20px; padding-right:5px; }
+.mark i { font-style:normal; color:#a8683e; }
+.layout { display:grid; grid-template-columns:minmax(220px, 290px) minmax(0, 1fr); gap:clamp(26px,6vw,80px); align-items:start; padding-top:36px; }
+h1 { margin:8px 0 12px; font:700 clamp(50px,7vw,76px)/1.16 "STSong","Songti SC","SimSun",serif; letter-spacing:.04em; }
+.intro { color:#515c51; font-size:14px; line-height:1.7; }
+.panel { margin-top:28px; background:#fffdf7; border:1px solid #e1ded2; border-radius:18px; padding:16px; }
+button,input { font:inherit; }
+button:not(.point) { min-height:44px; padding:8px 14px; border:1px solid #d7d9ce; border-radius:9px; color:#24352e; background:#fffdf7; cursor:pointer; white-space:nowrap; font-weight:650; }
+button.primary:not(.point) { width:100%; background:#254838; border-color:#254838; color:#fff; }
+button:disabled { opacity:.5; cursor:wait; }
+button:not(.point):hover:not(:disabled) { filter:brightness(.94); }
+:focus-visible { outline:2px solid #235e50; outline-offset:3px; }
+form { margin-top:16px; }
+label { display:block; margin-bottom:6px; font-size:13px; color:#515c51; }
+input { width:100%; min-width:0; min-height:44px; border:1px solid #d7d9ce; border-radius:9px; padding:8px 10px; background:#fff; color:inherit; font-size:16px; }
+#code { text-transform:uppercase; }
+.row { display:flex; gap:8px; }
+.room-label { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; font-size:14px; }
+.room-label strong { font:700 19px ui-monospace,monospace; letter-spacing:.06em; }
+.actions,#fallback { margin-top:12px; }
+#copy-status { margin:8px 0 0; font-size:13px; }
+.game-status { min-height:38px; margin-bottom:8px; display:flex; align-items:center; gap:10px; font-weight:650; }
+.stone { display:block; width:16px; height:16px; border-radius:50%; flex:none; }
+.black { background:radial-gradient(circle at 35% 28%,#626760,#262a25 58%,#101410); }
+.white { background:radial-gradient(circle at 35% 28%,#fff,#f7f0df 58%,#ddd5c1); border:1px solid #a99c86; }
+.frame { padding:6%; border:1px solid #ae8050; border-radius:16px; background:linear-gradient(125deg,#ecc592,#e0ac73 70%,#eac394); box-shadow:0 10px 24px #624b2824,inset 0 1px #fff8; }
+#board { position:relative; aspect-ratio:1; border:1px solid #775334; background-image:linear-gradient(to right,#775334 1px,transparent 1px),linear-gradient(to bottom,#775334 1px,transparent 1px); background-size:calc(100% / 14) calc(100% / 14); background-position:-1px -1px; }
+#points { position:absolute; inset:-1px; }
+.point { position:absolute; width:calc(100% / 15); aspect-ratio:1; padding:0; border:0; border-radius:50%; background:transparent; transform:translate(-50%,-50%); touch-action:manipulation; }
+#board[data-active="true"] .point:not(.black,.white) { cursor:pointer; }
+#board[data-active="true"] .point:not(.black,.white):hover { background:#28281928; }
+.point.black,.point.white { box-shadow:0 2px 3px #38260e70; }
+.point.last::after { content:""; position:absolute; inset:36%; border-radius:50%; background:#bf512c; }
+.point.win { outline:2px solid #276350; outline-offset:1px; }
+.stars { position:absolute; inset:0; pointer-events:none; }
+.stars i { position:absolute; width:6px; height:6px; transform:translate(-50%,-50%); border-radius:50%; background:#775334; }
+.stars i:nth-child(1) { left:21.4286%; top:21.4286%; }
+.stars i:nth-child(2) { left:78.5714%; top:21.4286%; }
+.stars i:nth-child(3) { left:50%; top:50%; }
+.stars i:nth-child(4) { left:21.4286%; top:78.5714%; }
+.stars i:nth-child(5) { left:78.5714%; top:78.5714%; }
+.caption { display:flex; justify-content:space-between; margin-top:12px; font-size:13px; color:#515c51; }
+@media (max-width:700px) {
+  main { padding-top:16px; }
+  header { padding-bottom:12px; }
+  .layout { grid-template-columns:1fr; padding-top:12px; gap:14px; }
+  h1 { font-size:44px; margin-bottom:4px; }
+  .intro { margin:4px 0; }
+  .panel { margin-top:12px; padding:12px; }
+  form { margin-top:8px; }
+}
