@@ -45,6 +45,8 @@ input { width:100%; min-width:0; min-height:44px; border:1px solid #d7d9ce; bord
 .stars i:nth-child(4) { left:21.4286%; top:78.5714%; }
 .stars i:nth-child(5) { left:78.5714%; top:78.5714%; }
 .caption { display:flex; justify-content:space-between; margin-top:12px; font-size:13px; color:#515c51; }
+#loss-overlay:not([hidden]) { position:fixed; inset:0; z-index:20; display:grid; place-items:center; pointer-events:none; background:#fff8; }
+#loss-overlay span { font:900 min(70vw,70svh)/1 "Microsoft YaHei",sans-serif; color:#d52c26; text-shadow:0 4px 0 #fff,0 12px 35px #630b0b44; transform:rotate(-8deg); }
 @media (max-width:700px) {
   main { padding-top:16px; }
   header { padding-bottom:12px; }

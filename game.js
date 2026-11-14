@@ -64,6 +64,7 @@ function render(message) {
   winner = line;
   const ready = !!room?.ready;
   const turn = currentColor();
+  byId('loss-overlay').hidden = !(ready && line.length > 0 && room.color === turn);
   const active = ready && !pending && !gameOver() && room.color === turn;
   byId('board').dataset.active = active;
   byId('room').hidden = !room;
