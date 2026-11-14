@@ -1,7 +1,6 @@
 const size = 15;
 const black = 1;
 const white = 2;
-const alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
 const byId = id => document.getElementById(id);
 const codeInput = byId('code');
 const points = [];
@@ -13,7 +12,7 @@ let focusIndex = 112;
 let timer;
 
 function makeCode() {
-  return Array.from(crypto.getRandomValues(new Uint8Array(8)), n => alphabet[n % alphabet.length]).join('');
+  return String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, '0');
 }
 
 function colorName(color) {
@@ -240,13 +239,13 @@ for (let i = 0; i < size * size; i++) {
   byId('points').append(point);
 }
 
-const validCode = /^[2-9A-HJ-NP-Z]{8}$/;
+const validCode = /^\d{4}$/;
 byId('create').onclick = () => start(black, makeCode());
 byId('join').onsubmit = event => {
   event.preventDefault();
   const code = codeInput.value.trim().toUpperCase();
   if (validCode.test(code)) start(white, code);
-  else render('请输入有效的 8 位房间码。');
+  else render('请输入 4 位数字房间码。');
 };
 byId('leave').onclick = () => reset();
 byId('again').onclick = () => {

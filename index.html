@@ -7,7 +7,7 @@
 <title>五子棋 · 好友对弈</title>
 <link rel="stylesheet" href="style.css?v=2">
 <script defer src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
-<script defer src="game.js"></script>
+<script defer src="game.js?v=3"></script>
 </head>
 <body>
 <main>
@@ -21,7 +21,7 @@
           <button id="create" class="primary">创建房间</button>
           <form id="join">
             <label for="code">已有房间码？</label>
-            <div class="row"><input id="code" placeholder="输入 8 位房间码" maxlength="8" autocomplete="off" spellcheck="false" autocapitalize="characters" required><button>加入</button></div>
+            <div class="row"><input id="code" placeholder="输入 4 位数字" maxlength="4" minlength="4" inputmode="numeric" pattern="[0-9]{4}" autocomplete="off" spellcheck="false" required><button>加入</button></div>
           </form>
         </div>
         <div id="room" hidden>
