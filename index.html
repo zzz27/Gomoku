@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#f7f4eb">
 <title>五子棋 · 好友对弈</title>
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 <script defer src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
-<script defer src="music.js?v=5"></script>
+<script defer src="music.js?v=6"></script>
 <script defer src="game.js?v=5"></script>
 </head>
 <body>
@@ -36,8 +36,7 @@
       <section class="music-panel" aria-label="背景音乐">
         <p id="music-status" role="status">赌神 BGM · 开局自动播放</p>
         <button id="music-play" type="button" hidden>点击播放音乐</button>
-        <div id="music-player"></div>
-        <a href="https://www.youtube.com/watch?v=IfYPHQ-oU5w" target="_blank" rel="noopener">在 YouTube 打开</a>
+        <audio id="music-player" src="assets/god-of-gamblers.mp4" preload="metadata" loop></audio>
       </section>
     </section>
     <section class="play" aria-label="对局">

@@ -47,8 +47,6 @@ input { width:100%; min-width:0; min-height:44px; border:1px solid #d7d9ce; bord
 .caption { display:flex; justify-content:space-between; margin-top:12px; font-size:13px; color:#515c51; }
 #music-toggle { margin-left:auto; font-size:13px; letter-spacing:0; }
 .music-panel { margin-top:20px; font-size:12px; color:#515c51; }
-.music-panel iframe { display:block; width:100%; min-width:200px; height:200px; border:0; border-radius:10px; margin:8px 0; }
-.music-panel a { color:#254838; }
 #loss-overlay:not([hidden]) { position:fixed; inset:0; z-index:20; display:grid; place-items:center; pointer-events:none; background:#fff8; }
 #loss-overlay span { font:900 min(70vw,70svh)/1 "Microsoft YaHei",sans-serif; color:#d52c26; text-shadow:0 4px 0 #fff,0 12px 35px #630b0b44; transform:rotate(-8deg); }
 @media (max-width:700px) {
